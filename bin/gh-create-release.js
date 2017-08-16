@@ -11,7 +11,7 @@ var tagName = argv.tag;
 var targetCommitish = argv.commit;
 var name = argv.name;
 var body = argv.body;
-var assetFiles = argv._;
+var assets = argv.assets.split(',');
 
 var github = new GitHubApi({
     version: '3.0.0',
@@ -40,7 +40,7 @@ github.repos.createRelease({
 }).then(function (resp) {
     return resp.data;
 }).then(function (release) {
-    var uploads = assetFiles.map(function (file) {
+    var uploads = assets.map(function (file) {
         return github.repos.uploadAsset({
             owner: owner,
             repo: repo,
