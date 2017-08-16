@@ -1,0 +1,25 @@
+{
+  "name": "gh-release-cli",
+  "version": "0.0.0",
+  "description": "A CLI to create a Github release for a repository.",
+  "bin": {
+    "gh-create-release": "./bin/gh-create-release.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tadodotcom/gh-release-cli.git"
+  },
+  "author": "Florian Rampp <florian.rampp@tado.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tadodotcom/gh-release-cli/issues"
+  },
+  "homepage": "https://github.com/tadodotcom/gh-release-cli#readme",
+  "dependencies": {
+    "github": "^9.2.0",
+    "minimist": "^1.2.0"
+  }
+}
