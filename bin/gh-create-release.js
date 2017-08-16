@@ -27,6 +27,8 @@ if (!!githubToken) {
         type: "token",
         token: githubToken
     });
+} else {
+    console.warn('environment variable GITHUB_TOKEN not found => unauthenticated API access');
 }
 
 github.repos.createRelease({
