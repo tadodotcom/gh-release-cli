@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-var minimist = require('minimist');
-var GitHubApi = require('github');
+const minimist = require('minimist');
+const GitHubApi = require('github');
 
-var argv = minimist(process.argv.slice(2));
+const argv = minimist(process.argv.slice(2));
 
-var owner = argv.owner;
-var repo = argv.repo;
-var tagName = argv.tag;
-var targetCommitish = argv.commit;
-var name = argv.name;
-var body = argv.body;
-var assets = argv.assets.split(',');
+const owner = argv.owner;
+const repo = argv.repo;
+const tagName = argv.tag;
+const targetCommitish = argv.commit;
+const name = argv.name;
+const body = argv.body;
+const assets = argv.assets.split(',');
 
-var github = new GitHubApi({
+const github = new GitHubApi({
     version: '3.0.0',
     headers: {
         'user-agent': 'gh-release-cli'
@@ -21,10 +21,10 @@ var github = new GitHubApi({
     timeout: 5000
 });
 
-var githubToken = process.env.GITHUB_TOKEN;
+const githubToken = process.env.GITHUB_TOKEN;
 if (!!githubToken) {
     github.authenticate({
-        type: "token",
+        type: 'token',
         token: githubToken
     });
 } else {
@@ -39,34 +39,35 @@ github.repos.createRelease({
     name: name,
     body: body,
     draft: false
-}).then(function (resp) {
-    return resp.data;
-}).then(function (release) {
-    var uploads = assets.map(function (file) {
-        return github.repos.uploadAsset({
-            owner: owner,
-            repo: repo,
-            id: release.id,
-            filePath: file,
-            name: file
-        });
-    });
-
-    return Promise.all(uploads)
-        .then(function () {
-            return release;
-        }).catch(function (data) {
-            return github.repos.deleteRelease({
+})
+    .then(resp => resp.data)
+    .then(release => {
+        const uploads = assets.map(file =>
+            github.repos.uploadAsset({
                 owner: owner,
                 repo: repo,
-                id: release.id
-            }).then(function () {
-                throw new Error('failed uploading assets: ' + data);
+                id: release.id,
+                filePath: file,
+                name: file
+            })
+        );
+
+        return Promise.all(uploads)
+            .then(() => release)
+            .catch(data => {
+                return github.repos.deleteRelease({
+                    owner: owner,
+                    repo: repo,
+                    id: release.id
+                }).then(() => {
+                    throw new Error(`failed uploading assets: ${data}`);
+                });
             });
-        });
-}).then(function (release) {
-    console.log('release ' + name + ' created: ' + release.html_url);
-}).catch(function (data) {
-    console.error(data.message);
-    process.exit(1);
-});
+    })
+    .then(release => {
+        console.log(`release ${name} created: ${release.html_url}`);
+    })
+    .catch(data => {
+        console.error(data.message);
+        process.exit(1);
+    });
