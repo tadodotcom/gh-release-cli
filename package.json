@@ -8,10 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tadodotcom/gh-release-cli.git"
-  },
+  "repository": "tadodotcom/gh-release-cli",
   "author": "Florian Rampp <florian.rampp@tado.com>",
   "license": "ISC",
   "bugs": {
