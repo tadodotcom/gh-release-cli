@@ -65,9 +65,9 @@ github.repos.createRelease({
             });
     })
     .then(release => {
-        console.log(`release ${name} created: ${release.html_url}`);
+        console.log(`created GitHub release ${name}: ${release.html_url}`);
     })
     .catch(data => {
-        console.error(data.message);
+        console.error(`failed to create GitHub release: ${data.message}`);
         process.exit(1);
     });
