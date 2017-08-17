@@ -10,7 +10,7 @@
   },
   "repository": "tadodotcom/gh-release-cli",
   "author": "Florian Rampp <florian.rampp@tado.com>",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/tadodotcom/gh-release-cli/issues"
   },
