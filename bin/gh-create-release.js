@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
 const minimist = require('minimist');
 const GitHubApi = require('github');
 
@@ -10,7 +11,7 @@ const repo = argv.repo;
 const tagName = argv.tag;
 const targetCommitish = argv.commit;
 const name = argv.name;
-const body = argv.body;
+const bodyFile = argv.body;
 const assets = argv.assets.split(',');
 
 const github = new GitHubApi({
@@ -30,6 +31,8 @@ if (!!githubToken) {
 } else {
     console.warn('environment variable GITHUB_TOKEN not found => unauthenticated API access');
 }
+
+const body = fs.readFileSync(bodyFile, 'utf8');
 
 github.repos.createRelease({
     owner: owner,
