@@ -53,12 +53,10 @@ github.repos.createRelease({
                 };
 
                 return github.repos.uploadReleaseAsset({
-                    'headers:content-length': headers['content-length'],
-                    'headers:content-type': headers['content-type'],
                     headers: headers,
                     url: release.upload_url,
                     name: file,
-                    file: fs.readFileSync(file, 'utf8')
+                    file: fs.createReadStream(file)
                 });
             }
         );
