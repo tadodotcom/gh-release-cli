@@ -6,6 +6,7 @@
     "gh-create-release": "./bin/gh-create-release.js"
   },
   "scripts": {
+    "start": "node ./bin/gh-create-release.js --owner=tadodotcom --repo=test-repo --commit=bfd13e9bbb942b4b4e37ca6bacf20651b5ee09d7 --assets=blabla.tar.gz --body=blabla --tag=release/v123 --name=v123",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "tadodotcom/gh-release-cli",
@@ -16,7 +17,7 @@
   },
   "homepage": "https://github.com/tadodotcom/gh-release-cli#readme",
   "dependencies": {
-    "github": "^9.2.0",
+    "@octokit/rest": "^16.1.0",
     "minimist": "^1.2.0"
   }
 }

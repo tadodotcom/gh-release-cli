@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const minimist = require('minimist');
-const GitHubApi = require('github');
+const GitHubApi = require('@octokit/rest');
 
 const argv = minimist(process.argv.slice(2));
 
