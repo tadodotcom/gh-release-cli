@@ -3,6 +3,7 @@
 const fs = require('fs');
 const minimist = require('minimist');
 const GitHubApi = require('@octokit/rest');
+const mime = require('mime-types');
 
 const argv = minimist(process.argv.slice(2));
 
@@ -45,14 +46,21 @@ github.repos.createRelease({
 })
     .then(resp => resp.data)
     .then(release => {
-        const uploads = assets.map(file =>
-            github.repos.uploadAsset({
-                owner: owner,
-                repo: repo,
-                id: release.id,
-                filePath: file,
-                name: file
-            })
+        const uploads = assets.map(file => {
+                const headers = {
+                    'content-length': fs.statSync(file).size,
+                    'content-type': mime.lookup(file)
+                };
+
+                return github.repos.uploadReleaseAsset({
+                    'headers:content-length': headers['content-length'],
+                    'headers:content-type': headers['content-type'],
+                    headers: headers,
+                    url: release.upload_url,
+                    name: file,
+                    file: fs.readFileSync(file, 'utf8')
+                });
+            }
         );
 
         return Promise.all(uploads)
