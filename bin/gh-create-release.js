@@ -20,7 +20,9 @@ const github = new GitHubApi({
     headers: {
         'user-agent': 'gh-release-cli'
     },
-    timeout: 20000
+    request: {
+        timeout: 20000
+    }
 });
 
 const githubToken = process.env.GITHUB_TOKEN;
