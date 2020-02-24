@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const minimist = require('minimist');
-const GitHubApi = require('@octokit/rest');
+const {Octokit} = require('@octokit/rest');
 const mime = require('mime-types');
 
 const argv = minimist(process.argv.slice(2));
@@ -15,23 +15,19 @@ const name = argv.name;
 const bodyFile = argv.body;
 const assets = argv.assets.split(',');
 
-const github = new GitHubApi({
-    version: '3.0.0',
-    headers: {
-        'user-agent': 'gh-release-cli'
-    },
-    timeout: 20000
-});
-
 const githubToken = process.env.GITHUB_TOKEN;
-if (!!githubToken) {
-    github.authenticate({
-        type: 'token',
-        token: githubToken
-    });
-} else {
+if (!githubToken) {
     console.warn('environment variable GITHUB_TOKEN not found => unauthenticated API access');
 }
+
+const github = new Octokit({
+    auth: githubToken,
+    userAgent: 'gh-release-cli',
+    request: {
+        version: '3.0.0',
+        timeout: 20000
+    }
+});
 
 const body = fs.readFileSync(bodyFile, 'utf8');
 
@@ -53,30 +49,35 @@ github.repos.createRelease({
                 };
 
                 return github.repos.uploadReleaseAsset({
+                    owner: owner,
+                    repo: repo,
+                    release_id: release.id,
                     headers: headers,
                     url: release.upload_url,
                     name: file,
-                    file: fs.createReadStream(file)
+                    data: fs.createReadStream(file)
                 });
             }
         );
 
         return Promise.all(uploads)
             .then(() => release)
-            .catch(data => {
+            .catch(error => {
                 return github.repos.deleteRelease({
                     owner: owner,
                     repo: repo,
-                    id: release.id
+                    release_id: release.id
                 }).then(() => {
-                    throw new Error(`failed uploading assets: ${data}`);
+                    throw new Error(`failed uploading assets: ${error}`);
+                }).catch(() => {
+                    throw new Error(`failed deleting release: ${error}`);
                 });
             });
     })
     .then(release => {
         console.log(`created GitHub release ${name}: ${release.html_url}`);
     })
-    .catch(data => {
-        console.error(`failed to create GitHub release: ${data.message}`);
+    .catch(error => {
+        console.error(`failed to create GitHub release: ${error}`);
         process.exit(1);
     });
