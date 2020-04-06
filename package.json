@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/tadodotcom/gh-release-cli#readme",
   "dependencies": {
-    "@octokit/rest": "~17.0.0",
-    "minimist": "~1.2.0",
+    "@octokit/rest": "~17.1.4",
+    "minimist": "~1.2.5",
     "mime-types": "~2.1.26"
   }
 }
